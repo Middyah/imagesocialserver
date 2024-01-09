@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./db/Database.js";
 import PostRoutes from "./Routes/PostRoutes.js"
+import AdminRoutes from "./Routes/AdiminRoutes.js"
 dotenv.config()
 const app=express()
 const PORT=process.env.PORT 
@@ -18,6 +19,7 @@ app.use((req, res, next) => {
 
   //user Post routes
 app.use("/api/userpost",PostRoutes)
+app.use("/api/admin",AdminRoutes)
 
 const start =async()=>{
     try{
