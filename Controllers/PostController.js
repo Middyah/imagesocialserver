@@ -1,7 +1,7 @@
 import Post from "../Models/PostModel.js"
 export const CreatNewPost = async (req, res) => {
   try {
-    const { post_title, category,Contactnumber ,location} = req.body;
+    const { post_title, category,Contactnumber ,location,Link,Productname} = req.body;
     const image = req.files['image'][0];
 
     const newPost = new Post({
@@ -15,7 +15,9 @@ export const CreatNewPost = async (req, res) => {
       category,
       admin_approved: false,
       location,
-      Contactnumber
+      Contactnumber,
+      Link,
+      Productname
     });
 
     // Save the document to the database
@@ -34,34 +36,48 @@ export const GetPost = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const category = req.query.category === "0" ? "" : req.query.category;
-    const post_title = req.query.post_title || "";
+    const postTitle = req.query.post_title || "";
+    const location = req.query.location || "";
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    const totalPosts = await Post.countDocuments();
+
+    const query = {}; 
+
+    // Adding conditions based on parameters
+    if (category !== "") {
+      query.category = category;
+    }
+    if (postTitle !== "") {
+      query.post_title = { $regex: postTitle, $options: 'i' };
+    }
+    if (location !== "") {
+      query.location = location; 
+    }
+
+    const totalPosts = await Post.countDocuments(query);
     const hasMore = endIndex < totalPosts;
+
     const pagination = {
       currentPage: page,
       totalPages: Math.ceil(totalPosts / limit),
     };
-    let images
-    if (category === "" && post_title === "") {
-      images = await Post.find({},  { post_title: 1, Contactnumber: 1 }).sort({ createdAt: -1 }).skip(startIndex).limit(limit);
-    } else if (category !== "" && post_title === "") {
-      images = await Post.find({ category: category }, { post_title: 1, Contactnumber: 1 }).sort({ createdAt: -1 }).skip(startIndex).limit(limit);
-    } else if (category === "" && post_title !== "") {
-      images = await Post.find({ post_title: { $regex: post_title, $options: 'i' } },  { post_title: 1, Contactnumber: 1 }).sort({ createdAt: -1 }).skip(startIndex).limit(limit);
-    }
+
+    const images = await Post.find(query, { post_title: 1, Contactnumber: 1 })
+      .sort({ createdAt: -1 })
+      .skip(startIndex)
+      .limit(limit);
+
     res.send({
       totalPosts,
       pagination,
       posts: images,
-      hasMore
+      hasMore,
     });
   } catch (error) {
     console.error('Error retrieving images:', error);
     res.status(500).send('An error occurred');
   }
-}
+};
 
 
 

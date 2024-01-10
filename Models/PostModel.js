@@ -17,6 +17,8 @@ const UploadPost = Schema({
   tag: String,
   location: String,
   Contactnumber: String,
+  Link: String,
+  Productname: String,
 
 });
 
