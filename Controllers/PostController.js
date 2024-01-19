@@ -37,7 +37,8 @@ export const GetPost = async (req, res) => {
     const limit = parseInt(req.query.limit) || 5;
     const category = req.query.category === "0" ? "" : req.query.category;
     const postTitle = req.query.post_title || "";
-    const location = req.query.location || "";
+    // const location = req.query.location || "";
+    const locations = req.query.location ? req.query.location.split(',') : [];
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
@@ -50,9 +51,12 @@ export const GetPost = async (req, res) => {
     if (postTitle !== "") {
       query.post_title = { $regex: postTitle, $options: 'i' };
     }
-    if (location !== "") {
-      query.location = location; 
+    if (locations.length > 0) {
+      query.location = { $in: locations };
     }
+    // if (location !== "") {
+    //   query.location = location; 
+    // }
 
     const totalPosts = await Post.countDocuments(query);
     const hasMore = endIndex < totalPosts;
@@ -62,7 +66,7 @@ export const GetPost = async (req, res) => {
       totalPages: Math.ceil(totalPosts / limit),
     };
 
-    const images = await Post.find(query, { post_title: 1, Contactnumber: 1 })
+    const images = await Post.find(query, { post_title: 1, Contactnumber: 1, Link:1})
       .sort({ createdAt: -1 })
       .skip(startIndex)
       .limit(limit);
