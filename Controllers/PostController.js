@@ -31,20 +31,76 @@ export const CreatNewPost = async (req, res) => {
 }
 
 
+// export const GetPost = async (req, res) => {
+//   try {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 10;
+//     const category = req.query.category === "0" ? "" : req.query.category;
+//     const postTitle = req.query.post_title || "";
+//     // const location = req.query.location || "";
+//     const locations = req.query.location ? req.query.location.split(',') : [];
+//     const startIndex = (page - 1) * limit;
+//     const endIndex = page * limit;
+
+//     const query = {}; 
+
+//     // Adding conditions based on parameters
+//     if (category !== "") {
+//       query.category = category;
+//     }
+//     if (postTitle !== "") {
+//       query.post_title = { $regex: postTitle, $options: 'i' };
+//     }
+//     if (locations.length > 0) {
+//       query.location = { $in: locations };
+//     }
+//     // if (location !== "") {
+//     //   query.location = location; 
+//     // }
+//     if (Productname !== "") {
+//       query.Productname = { $regex: Productname, $options: 'i' };
+//     }
+//     const totalPosts = await Post.countDocuments(query);
+//     const hasMore = endIndex < totalPosts;
+
+//     const pagination = {
+//       currentPage: page,
+//       totalPages: Math.ceil(totalPosts / limit),
+//     };
+
+//     const images = await Post.find(query, { post_title: 1, Contactnumber: 1, Link:1})
+//       .sort({ createdAt: -1 })
+//       .skip(startIndex)
+//       .limit(limit);
+
+//     res.send({
+//       totalPosts,
+//       pagination,
+//       posts: images,
+//       hasMore,
+//     });
+//   } catch (error) {
+//     console.error('Error retrieving images:', error);
+//     res.status(500).send('An error occurred');
+//   }
+// };
+
+
+
 export const GetPost = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 5;
+    const limit = parseInt(req.query.limit) || 10;
     const category = req.query.category === "0" ? "" : req.query.category;
     const postTitle = req.query.post_title || "";
-    // const location = req.query.location || "";
     const locations = req.query.location ? req.query.location.split(',') : [];
+    const Productname = req.query.Productname || ""; // Extract Productname from query parameters
+
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
-    const query = {}; 
+    const query = {};
 
-    // Adding conditions based on parameters
     if (category !== "") {
       query.category = category;
     }
@@ -54,9 +110,9 @@ export const GetPost = async (req, res) => {
     if (locations.length > 0) {
       query.location = { $in: locations };
     }
-    // if (location !== "") {
-    //   query.location = location; 
-    // }
+    if (Productname !== "") {
+      query.Productname = { $regex: Productname, $options: 'i' };
+    }
 
     const totalPosts = await Post.countDocuments(query);
     const hasMore = endIndex < totalPosts;
@@ -66,7 +122,7 @@ export const GetPost = async (req, res) => {
       totalPages: Math.ceil(totalPosts / limit),
     };
 
-    const images = await Post.find(query, { post_title: 1, Contactnumber: 1, Link:1})
+    const images = await Post.find(query, { post_title: 1, Contactnumber: 1, Link: 1 })
       .sort({ createdAt: -1 })
       .skip(startIndex)
       .limit(limit);
@@ -82,7 +138,6 @@ export const GetPost = async (req, res) => {
     res.status(500).send('An error occurred');
   }
 };
-
 
 
 
