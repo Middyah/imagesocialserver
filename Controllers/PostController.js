@@ -95,7 +95,7 @@ export const GetPost = async (req, res) => {
     const postTitle = req.query.post_title || "";
     const locations = req.query.location ? req.query.location.split(',') : [];
     const Productname = req.query.Productname || ""; // Extract Productname from query parameters
-
+    const _id=req.query._id
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
@@ -103,6 +103,9 @@ export const GetPost = async (req, res) => {
 
     if (category !== "") {
       query.category = category;
+    }
+    if(_id!==""){
+      query._id = _id;
     }
     if (postTitle !== "") {
       query.post_title = { $regex: postTitle, $options: 'i' };
