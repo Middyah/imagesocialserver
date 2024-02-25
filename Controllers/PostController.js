@@ -91,7 +91,8 @@ export const GetPost = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const category = req.query.category === "0" ? "" : req.query.category;
+    // const category = req.query.category === "0" ? "" : req.query.category;
+    const category = (req.query.category === "0" || req.query.category === "15") ? "" : req.query.category;
     const postTitle = req.query.post_title || "";
     const locations = req.query.location ? req.query.location.split(',') : [];
     const Productname = req.query.Productname || ""; // Extract Productname from query parameters
