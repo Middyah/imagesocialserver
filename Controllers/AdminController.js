@@ -81,6 +81,24 @@ export const LinkCount = async (req, res) => {
     }
 }
 
+export const getShareCount = async (req, res) => {
+    const { post_id } = req.params;
+    try {
+      // Fetch the post from the database
+      const post = await Post.findById(post_id);
+  
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+  
+      // Return the share count
+      res.status(200).json({ shareCount: post.shareCount });
+    } catch (error) {
+      console.error('Error fetching share count:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
 
 
 export const Creatuser = async (req, res, next) => {
