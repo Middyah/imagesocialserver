@@ -32,7 +32,7 @@ import Post from "../Models/PostModel.js"
 
 export const CreatNewPost = async (req, res) => {
   try {
-    const { post_title, category, Contactnumber, location, Link, Productname } = req.body;
+    const { post_title, category, Contactnumber, location, Link, Productname,combineimg } = req.body;
     const images = req.files['image']; // Get the array of images
 
     
@@ -52,7 +52,8 @@ export const CreatNewPost = async (req, res) => {
         location,
         Contactnumber,
         Link,
-        Productname
+        Productname,
+        combineimg
       });
 
       // Save the document to the database
@@ -167,7 +168,7 @@ export const GetPost = async (req, res) => {
       totalPages: Math.ceil(totalPosts / limit),
     };
 
-    const images = await Post.find(query, { post_title: 1, Contactnumber: 1, Link: 1 })
+    const images = await Post.find(query, { post_title: 1, Contactnumber: 1, Link: 1,combineimg:1 })
       .sort({ createdAt: -1 })
       .skip(startIndex)
       .limit(limit);

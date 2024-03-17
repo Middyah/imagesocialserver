@@ -19,6 +19,7 @@ const UploadPost = Schema({
   Contactnumber: String,
   Link: String,
   Productname: String,
+  combineimg:String
 
 });
 
