@@ -1,34 +1,74 @@
 import Post from "../Models/PostModel.js"
+// export const CreatNewPost = async (req, res) => {
+//   try {
+//     const { post_title, category,Contactnumber ,location,Link,Productname} = req.body;
+//     const image = req.files['image'][0];
+
+//     const newPost = new Post({
+//       image: {
+//         data: image.buffer,
+//         contentType: image.mimetype,
+//         image_id: image.originalname,
+
+//       },
+//       post_title,
+//       category,
+//       admin_approved: false,
+//       location,
+//       Contactnumber,
+//       Link,
+//       Productname
+//     });
+
+//     // Save the document to the database
+//     await newPost.save();
+
+//     res.status(201).json({ message: 'Post created successfully' });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// }
+
 export const CreatNewPost = async (req, res) => {
   try {
-    const { post_title, category,Contactnumber ,location,Link,Productname} = req.body;
-    const image = req.files['image'][0];
+    const { post_title, category, Contactnumber, location, Link, Productname } = req.body;
+    const images = req.files['image']; // Get the array of images
 
-    const newPost = new Post({
-      image: {
-        data: image.buffer,
-        contentType: image.mimetype,
-        image_id: image.originalname,
+    
+    const imageIds = [];
 
-      },
-      post_title,
-      category,
-      admin_approved: false,
-      location,
-      Contactnumber,
-      Link,
-      Productname
-    });
+    
+    for (const image of images) {
+      const newPost = new Post({
+        image: {
+          data: image.buffer,
+          contentType: image.mimetype,
+          image_id: image.originalname,
+        },
+        post_title,
+        category,
+        admin_approved: false,
+        location,
+        Contactnumber,
+        Link,
+        Productname
+      });
 
-    // Save the document to the database
-    await newPost.save();
+      // Save the document to the database
+      await newPost.save();
 
-    res.status(201).json({ message: 'Post created successfully' });
+      // Add the ID of the created Post document to the array
+      imageIds.push(newPost._id);
+    }
+
+    res.status(201).json({ message: 'Post created successfully', imageIds });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
+
 
 
 // export const GetPost = async (req, res) => {
@@ -93,6 +133,7 @@ export const GetPost = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     // const category = req.query.category === "0" ? "" : req.query.category;
     const category = (req.query.category === "0" || req.query.category === "15") ? "" : req.query.category;
+
     const postTitle = req.query.post_title || "";
     const locations = req.query.location ? req.query.location.split(',') : [];
     const Productname = req.query.Productname || ""; // Extract Productname from query parameters
