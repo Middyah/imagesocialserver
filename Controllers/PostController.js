@@ -158,11 +158,11 @@ export const CreatNewPost = async (req, res) => {
         }
 
         const totalPosts = await Post.countDocuments(); // Total count of documents
-    
         const posts = await Post.aggregate([
           // { $match: {} }, // Your match conditions here
           { $match: query },
-          { $project: { post_title: 1, Contactnumber: 1, Link: 1, combineimg: 1 } },
+          {$sort:{_id:-1}},
+          { $project: { post_title: 1, Contactnumber: 1, Link: 1, combineimg: 1 ,location:1} },
           { $skip: skip },
           { $limit: limit }
         ]).allowDiskUse(true).exec();
