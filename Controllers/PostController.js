@@ -138,7 +138,8 @@ export const CreatNewPost = async (req, res) => {
         const postTitle = req.query.post_title || "";
         const locations = req.query.location ? req.query.location.split(',') : [];
         const Productname = req.query.Productname || ""; // Extract Productname from query parameters
-        const _id=req.query._id
+        const _id=req.query._id || "";
+        const combineimg=req.query.combineimg || "";
         const query = {};
 
         if (category !== "") {
@@ -146,6 +147,9 @@ export const CreatNewPost = async (req, res) => {
         }
         if(_id!==""){
           query._id = _id;
+        }
+        if(combineimg!==""){
+          query.combineimg = combineimg;
         }
         if (postTitle !== "") {
           query.post_title = { $regex: postTitle, $options: 'i' };
@@ -157,6 +161,7 @@ export const CreatNewPost = async (req, res) => {
           query.Productname = { $regex: Productname, $options: 'i' };
         }
 
+        console.log(query,"queryquery");
         const totalPosts = await Post.countDocuments(); // Total count of documents
         const posts = await Post.aggregate([
           // { $match: {} }, // Your match conditions here
@@ -208,4 +213,3 @@ export const PerticulerImg = async (req, res) => {
 
 
 }
-
