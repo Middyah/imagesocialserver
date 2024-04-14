@@ -133,7 +133,7 @@ export const CreatNewPost = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const category = (req.query.category === "0" || req.query.category === "15") ? "" : req.query.category;
+        const category = (req.query.category === "0" || req.query.category === "15" ||req.query.category === "null") ? "" : req.query.category;
 
         const postTitle = req.query.post_title || "";
         const locations = req.query.location ? req.query.location.split(',') : [];
