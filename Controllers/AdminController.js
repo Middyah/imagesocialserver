@@ -98,6 +98,24 @@ export const getShareCount = async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
+  
+  export const sharePost = async (req, res) => {
+    const { post_id } = req.params;
+    try {
+        let post = await Post.findById(post_id);
+        if (post) {
+            post.shareCount += 1;
+            await post.save();
+            res.status(200).json({ message: 'Post shared successfully', shareCount: post.shareCount });
+        } else {
+            res.status(404).json({ message: 'Post not found' });
+        }
+    } catch (error) {
+        console.error('Error sharing post:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 
 
 
